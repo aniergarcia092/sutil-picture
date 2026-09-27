@@ -917,13 +917,11 @@
     </div>
   </footer>
 
-  <!-- CARRITO FLOTANTE -->
   <button class="cart-float" id="cartFloat" aria-label="Abrir carrito">
     🛒 <span>Ver carrito</span>
     <span class="cart-count" id="cartCount">0</span>
   </button>
 
-  <!-- MODAL CARRITO -->
   <div class="cart-modal" id="cartModal">
     <div class="cart-panel">
       <div class="cart-header">
@@ -945,14 +943,13 @@
     </div>
   </div>
 
-  <!-- MODAL IMAGEN -->
   <div class="modal" id="imageModal">
     <button class="modal-close" id="modalClose" aria-label="Cerrar">×</button>
     <img id="modalImage" src="" alt="">
   </div>
 
   <script>
-    const API_URL = 'http://localhost:3000/api';
+    const API_URL = 'https://sutil-picture-api.onrender.com/api';
     const SERVER_URL = API_URL.replace('/api', '');
 
     const state = {
@@ -962,9 +959,6 @@
       cart: JSON.parse(localStorage.getItem('sutil_cart') || '[]')
     };
 
-    /* =========================================================
-       HELPERS
-    ========================================================= */
     async function getJSON(endpoint) {
       const response = await fetch(API_URL + endpoint);
       if (!response.ok) throw new Error('No se pudo cargar la información.');
@@ -980,9 +974,6 @@
       return num.toLocaleString('es-ES');
     }
 
-    /* =========================================================
-       CONTENIDO DINÁMICO
-    ========================================================= */
     async function cargarContenidoDinamico() {
       try {
         const contenido = await getJSON('/contenido');
@@ -1023,9 +1014,6 @@
       }
     }
 
-    /* =========================================================
-       GALERÍA
-    ========================================================= */
     async function cargarFotosDinamicas() {
       const gallery = document.getElementById('gallery');
       try {
@@ -1079,9 +1067,6 @@
       });
     }
 
-    /* =========================================================
-       OFERTAS CON CARRITO
-    ========================================================= */
     async function cargarOfertas() {
       const container = document.getElementById('offers');
       try {
@@ -1142,9 +1127,6 @@
       });
     }
 
-    /* =========================================================
-       CARRITO
-    ========================================================= */
     function toggleCarrito(oferta, btn) {
       const index = state.cart.findIndex(item => item.id === oferta.id);
 
@@ -1235,9 +1217,6 @@
       cartTotal.textContent = `${formatPrecio(total)} ${moneda}`;
     }
 
-    /* =========================================================
-       CHECKOUT POR WHATSAPP
-    ========================================================= */
     function checkoutWhatsApp() {
       if (!state.cart.length) return;
 
@@ -1260,9 +1239,6 @@
       window.open(url, '_blank');
     }
 
-    /* =========================================================
-       EVENT LISTENERS
-    ========================================================= */
     document.querySelectorAll('.filter-btn').forEach(button => {
       button.addEventListener('click', () => {
         document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));

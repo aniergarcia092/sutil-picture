@@ -1,4 +1,4 @@
-const API = 'http://localhost:3000/api';
+const API = 'https://sutil-picture-api.onrender.com/api';
 const SERVER = API.replace('/api', '');
 
 let token = localStorage.getItem('adminToken') || null;
