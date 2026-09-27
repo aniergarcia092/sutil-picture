@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0f0f12">
   <title>Panel Admin · Sutil Picture</title>
+  <link rel="icon" type="image/jpeg" href="logo.jpg">
   <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
@@ -165,8 +166,32 @@
           <label>Instagram<input name="instagram" placeholder="sutil_picture"></label>
           <label>Color de acento<input type="color" name="color_accent"></label>
           <label>Nombre del negocio<input name="nombre_negocio"></label>
-          <button type="submit" class="btn">Guardar cambios</button>
-          <p id="contenidoStatus" class="status"></p>
+
+          <div class="form-section">
+            <h3>Imagen "Sobre el estudio"</h3>
+            <p class="form-help">
+              Esta es la imagen que aparece junto al texto "Sobre el estudio" en la web pública.
+            </p>
+
+            <label>
+              Selecciona la imagen (JPG, PNG o WEBP)
+              <input type="file" id="sobreImagenInput" accept="image/jpeg,image/png,image/webp">
+            </label>
+
+            <button type="button" id="subirSobreBtn" class="btn" style="margin-top: 12px;">
+              📤 Subir imagen "Sobre"
+            </button>
+
+            <p id="sobreImagenStatus" class="status"></p>
+
+            <div id="sobreImagenPreviewWrap" class="sobre-preview" style="display: none;">
+              <p class="sobre-preview-label">Imagen actual</p>
+              <img id="sobreImagenPreview" src="" alt="Preview Sobre">
+            </div>
+          </div>
+
+          <button type="submit" class="btn full-width">Guardar cambios</button>
+          <p id="contenidoStatus" class="status full-width"></p>
         </form>
       </div>
 

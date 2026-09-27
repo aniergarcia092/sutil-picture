@@ -96,6 +96,9 @@ document.querySelectorAll('.sidebar nav button').forEach(button => {
 document.getElementById('logoutBtn').addEventListener('click', logout);
 document.getElementById('mobileLogout').addEventListener('click', logout);
 
+/* =========================================================
+   DASHBOARD
+========================================================= */
 async function cargarDashboard() {
   try {
     const [fotos, ofertas, mensajes] = await Promise.all([
@@ -114,6 +117,9 @@ async function cargarDashboard() {
   }
 }
 
+/* =========================================================
+   FOTOS
+========================================================= */
 async function cargarFotos() {
   try {
     const fotos = await api('/fotos');
@@ -195,6 +201,9 @@ document.getElementById('formFoto').addEventListener('submit', async event => {
   }
 });
 
+/* =========================================================
+   OFERTAS
+========================================================= */
 async function cargarOfertas() {
   try {
     const ofertas = await api('/ofertas');
@@ -284,6 +293,9 @@ document.getElementById('nuevaOferta').addEventListener('click', async () => {
   }
 });
 
+/* =========================================================
+   CONTENIDO
+========================================================= */
 async function cargarContenido() {
   try {
     const data = await api('/contenido');
@@ -294,6 +306,16 @@ async function cargarContenido() {
         form.elements[key].value = value;
       }
     });
+
+    // Cargar imagen "Sobre"
+    if (data.sobre_imagen) {
+      const preview = document.getElementById('sobreImagenPreview');
+      const wrap = document.getElementById('sobreImagenPreviewWrap');
+      if (preview && wrap) {
+        preview.src = `${SERVER}/uploads/${data.sobre_imagen}?t=${Date.now()}`;
+        wrap.style.display = 'block';
+      }
+    }
   } catch (error) {
     console.error(error);
   }
@@ -318,6 +340,51 @@ document.getElementById('formContenido').addEventListener('submit', async event 
   }
 });
 
+/* =========================================================
+   SUBIR IMAGEN "SOBRE"
+========================================================= */
+document.getElementById('subirSobreBtn').addEventListener('click', async () => {
+  const input = document.getElementById('sobreImagenInput');
+  const status = document.getElementById('sobreImagenStatus');
+  const preview = document.getElementById('sobreImagenPreview');
+  const wrap = document.getElementById('sobreImagenPreviewWrap');
+
+  if (!input.files.length) {
+    status.textContent = 'Selecciona un archivo primero.';
+    return;
+  }
+
+  status.textContent = 'Subiendo imagen...';
+
+  const formData = new FormData();
+  formData.append('archivo', input.files[0]);
+
+  try {
+    const response = await fetch(`${API}/contenido/sobre-imagen`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) throw new Error(result.error || 'Error al subir la imagen');
+
+    status.textContent = '✓ Imagen actualizada correctamente.';
+    input.value = '';
+
+    if (preview && wrap) {
+      preview.src = `${SERVER}/uploads/${result.archivo}?t=${Date.now()}`;
+      wrap.style.display = 'block';
+    }
+  } catch (error) {
+    status.textContent = error.message;
+  }
+});
+
+/* =========================================================
+   MENSAJES
+========================================================= */
 async function cargarMensajes() {
   try {
     const mensajes = await api('/mensajes');
@@ -384,6 +451,9 @@ async function cargarMensajes() {
   }
 }
 
+/* =========================================================
+   INICIALIZACIÓN
+========================================================= */
 if (token) {
   mostrarPanel();
 }
