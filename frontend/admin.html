@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f0f12">
+  <title>Panel Admin · Sutil Picture</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <section id="loginView" class="login-container">
+    <form id="loginForm" class="login-box">
+      <div class="brand-mark">Sutil<span>Picture</span></div>
+      <h1>Panel de administración</h1>
+      <p>Gestiona fotografías, ofertas, contenido y mensajes.</p>
+
+      <label>
+        Usuario
+        <input type="text" id="usuario" placeholder="Usuario" autocomplete="username" required>
+      </label>
+
+      <label>
+        Contraseña
+        <input type="password" id="contraseña" placeholder="Contraseña" autocomplete="current-password" required>
+      </label>
+
+      <button type="submit" class="btn">Entrar</button>
+      <p id="loginError" class="error"></p>
+
+      <a class="back-public" href="index.html">← Volver a la web pública</a>
+    </form>
+  </section>
+
+  <section id="adminView" class="admin-container" hidden>
+    <aside class="sidebar">
+      <div class="sidebar-brand">Sutil<span>Picture</span></div>
+
+      <nav>
+        <button data-tab="dashboard" class="active">📊 Dashboard</button>
+        <button data-tab="fotos">🖼️ Fotos</button>
+        <button data-tab="ofertas">💰 Ofertas</button>
+        <button data-tab="contenido">📝 Contenido</button>
+        <button data-tab="mensajes">✉️ Mensajes</button>
+      </nav>
+
+      <a class="view-site" href="index.html" target="_blank">👁️ Ver web pública</a>
+      <button id="logoutBtn" class="logout">Cerrar sesión</button>
+    </aside>
+
+    <main class="main-content">
+      <div class="mobile-topbar">
+        <strong>Sutil<span>Picture</span></strong>
+        <div class="mobile-actions">
+          <a href="index.html" target="_blank" class="view-site-mobile" title="Ver web pública">👁️</a>
+          <button id="mobileLogout" class="logout small">Salir</button>
+        </div>
+      </div>
+
+      <div class="tab" id="tab-dashboard">
+        <div class="page-heading">
+          <div>
+            <span class="eyebrow">Administración</span>
+            <h1>Dashboard</h1>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <strong id="statFotos">0</strong>
+            <span>Fotos</span>
+          </div>
+          <div class="stat-card">
+            <strong id="statOfertas">0</strong>
+            <span>Ofertas</span>
+          </div>
+          <div class="stat-card">
+            <strong id="statMensajes">0</strong>
+            <span>Mensajes</span>
+          </div>
+          <div class="stat-card">
+            <strong id="statNoLeidos">0</strong>
+            <span>Sin leer</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab" id="tab-fotos" hidden>
+        <div class="page-heading">
+          <div>
+            <span class="eyebrow">Galería</span>
+            <h1>Gestión de fotos</h1>
+          </div>
+        </div>
+
+        <form id="formFoto" class="form-card">
+          <div class="form-grid">
+            <label>
+              Título
+              <input type="text" name="titulo" placeholder="Ej. Retrato editorial" required>
+            </label>
+
+            <label>
+              Categoría
+              <select name="categoria" required>
+                <option value="estudio">Estudio</option>
+                <option value="exteriores">Exteriores</option>
+                <option value="retratos">Retratos</option>
+                <option value="eventos">Eventos</option>
+                <option value="otros">Otros</option>
+              </select>
+            </label>
+
+            <label>
+              Orden
+              <input type="number" name="orden" value="0">
+            </label>
+          </div>
+
+          <label>
+            Descripción
+            <textarea name="descripcion" placeholder="Descripción de la fotografía"></textarea>
+          </label>
+
+          <label>
+            Archivo
+            <input type="file" name="archivo" accept="image/jpeg,image/png,image/webp,image/gif" required>
+          </label>
+
+          <button type="submit" class="btn">Subir foto</button>
+          <p id="fotoStatus" class="status"></p>
+        </form>
+
+        <div id="listaFotos" class="grid-admin"></div>
+      </div>
+
+      <div class="tab" id="tab-ofertas" hidden>
+        <div class="page-heading heading-row">
+          <div>
+            <span class="eyebrow">Servicios</span>
+            <h1>Ofertas</h1>
+          </div>
+          <button id="nuevaOferta" class="btn">+ Nueva oferta</button>
+        </div>
+
+        <div id="listaOfertas" class="lista-admin"></div>
+      </div>
+
+      <div class="tab" id="tab-contenido" hidden>
+        <div class="page-heading">
+          <div>
+            <span class="eyebrow">Sitio público</span>
+            <h1>Contenido editable</h1>
+          </div>
+        </div>
+
+        <form id="formContenido" class="form-card">
+          <label>Eyebrow del hero<input name="hero_eyebrow"></label>
+          <label>Título del hero<input name="hero_titulo"></label>
+          <label>Subtítulo del hero<textarea name="hero_subtitulo"></textarea></label>
+          <label>Título "Sobre mí"<input name="sobre_titulo"></label>
+          <label>Texto 1<textarea name="sobre_texto_1"></textarea></label>
+          <label>Texto 2<textarea name="sobre_texto_2"></textarea></label>
+          <label>WhatsApp<input name="whatsapp" placeholder="5356453839"></label>
+          <label>Instagram<input name="instagram" placeholder="sutil_picture"></label>
+          <label>Color de acento<input type="color" name="color_accent"></label>
+          <label>Nombre del negocio<input name="nombre_negocio"></label>
+          <button type="submit" class="btn">Guardar cambios</button>
+          <p id="contenidoStatus" class="status"></p>
+        </form>
+      </div>
+
+      <div class="tab" id="tab-mensajes" hidden>
+        <div class="page-heading">
+          <div>
+            <span class="eyebrow">Contacto</span>
+            <h1>Mensajes recibidos</h1>
+          </div>
+        </div>
+
+        <div id="listaMensajes" class="lista-admin"></div>
+      </div>
+    </main>
+  </section>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

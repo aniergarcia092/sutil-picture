@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sutil Picture · Fotografía profesional">
+  <meta name="theme-color" content="#111111">
+  <title>Sutil Picture · Fotografía</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #101010;
+      --surface: #171717;
+      --text: #f5f2ec;
+      --muted: #aaa49c;
+      --accent: #d8ad70;
+      --line: rgba(255,255,255,.1);
+      --max: 1180px;
+      --success: #4ade80;
+      --danger: #f87171;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "DM Sans", sans-serif;
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    img {
+      max-width: 100%;
+    }
+
+    .container {
+      width: min(var(--max), calc(100% - 40px));
+      margin: auto;
+    }
+
+    /* NAV */
+    .nav {
+      position: fixed;
+      z-index: 20;
+      top: 0;
+      width: 100%;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      background: rgba(16,16,16,.78);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav-inner {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -.04em;
+    }
+
+    .logo span {
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      color: #ddd;
+      font-size: .92rem;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .nav-cta {
+      border: 1px solid var(--accent);
+      padding: 9px 15px;
+      border-radius: 100px;
+      color: var(--accent);
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      align-items: end;
+      padding: 150px 0 80px;
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,.82), rgba(0,0,0,.25)),
+        url("https://images.unsplash.com/photo-1554048612-b6a482bc67e5?auto=format&fit=crop&w=1800&q=85") center/cover;
+    }
+
+    .hero-content {
+      max-width: 800px;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: .2em;
+      font-size: .75rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(3.2rem, 8vw, 7rem);
+      line-height: .95;
+      letter-spacing: -.055em;
+      max-width: 850px;
+    }
+
+    .hero p {
+      margin-top: 26px;
+      max-width: 650px;
+      color: #d2d0cc;
+      font-size: 1.08rem;
+    }
+
+    .hero-actions {
+      margin-top: 32px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 48px;
+      padding: 0 20px;
+      border-radius: 100px;
+      background: var(--accent);
+      color: #111;
+      font-weight: 800;
+      border: 1px solid var(--accent);
+      cursor: pointer;
+      transition: .25s;
+    }
+
+    .btn:hover {
+      background: #efc98e;
+      transform: translateY(-2px);
+    }
+
+    .btn.secondary {
+      color: #fff;
+      background: transparent;
+      border-color: rgba(255,255,255,.25);
+    }
+
+    .btn.secondary:hover {
+      background: rgba(255,255,255,.08);
+    }
+
+    /* SECTIONS */
+    section:not(.hero) {
+      padding: 110px 0;
+    }
+
+    .section-heading {
+      margin-bottom: 45px;
+    }
+
+    .section-heading h2 {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      line-height: 1.05;
+      letter-spacing: -.04em;
+      max-width: 760px;
+    }
+
+    /* GALLERY */
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 25px;
+    }
+
+    .filter-btn {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      padding: 9px 14px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      color: #111;
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .gallery-item {
+      min-height: 390px;
+      position: relative;
+      overflow: hidden;
+      background: var(--surface);
+      cursor: pointer;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      min-height: 390px;
+      display: block;
+      object-fit: cover;
+      transition: transform .6s ease;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.045);
+    }
+
+    .gallery-overlay {
+      position: absolute;
+      inset: auto 0 0;
+      padding: 45px 22px 22px;
+      background: linear-gradient(transparent, rgba(0,0,0,.85));
+    }
+
+    .gallery-overlay h3 {
+      font-size: 1.05rem;
+    }
+
+    .gallery-overlay p {
+      color: #c9c9c9;
+      font-size: .86rem;
+    }
+
+    .empty-gallery {
+      grid-column: 1/-1;
+      padding: 60px 20px;
+      border: 1px dashed var(--line);
+      text-align: center;
+      color: var(--muted);
+    }
+
+    /* ABOUT */
+    .about-grid {
+      display: grid;
+      grid-template-columns: .85fr 1.15fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .about-image {
+      min-height: 620px;
+      background:
+        linear-gradient(0deg, rgba(0,0,0,.1), rgba(0,0,0,.1)),
+        url("https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=1000&q=85") center/cover;
+    }
+
+    .about-text p {
+      color: var(--muted);
+      margin-top: 20px;
+      max-width: 650px;
+    }
+
+    /* OFERTAS + CARRITO */
+    .offers {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .offer {
+      padding: 30px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      transition: .3s;
+    }
+
+    .offer:hover {
+      transform: translateY(-4px);
+      border-color: rgba(216,173,112,.4);
+      box-shadow: 0 15px 40px rgba(0,0,0,.3);
+    }
+
+    .offer.featured {
+      border-color: var(--accent);
+      position: relative;
+    }
+
+    .offer.featured::before {
+      content: "Más elegido";
+      position: absolute;
+      top: -12px;
+      right: 20px;
+      background: var(--accent);
+      color: #111;
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+      letter-spacing: .5px;
+    }
+
+    .offer h3 {
+      font-family: "Playfair Display", serif;
+      font-size: 1.7rem;
+    }
+
+    .offer-price {
+      margin: 20px 0;
+      color: var(--accent);
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .offer p,
+    .offer li {
+      color: var(--muted);
+    }
+
+    .offer ul {
+      padding-left: 18px;
+      margin-top: 15px;
+      margin-bottom: 20px;
+      flex-grow: 1;
+    }
+
+    .offer-add-btn {
+      width: 100%;
+      min-height: 44px;
+      border-radius: 100px;
+      border: 1px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      font-weight: 700;
+      cursor: pointer;
+      transition: .25s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .offer-add-btn:hover {
+      background: var(--accent);
+      color: #111;
+      transform: translateY(-2px);
+    }
+
+    .offer-add-btn.added {
+      background: var(--success);
+      border-color: var(--success);
+      color: #111;
+    }
+
+    /* CARRITO FLOTANTE */
+    .cart-float {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      background: var(--accent);
+      color: #111;
+      border: none;
+      border-radius: 100px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 40px rgba(216,173,112,.4);
+      transition: .3s;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(20px);
+    }
+
+    .cart-float.visible {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateY(0);
+    }
+
+    .cart-float:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 15px 50px rgba(216,173,112,.55);
+    }
+
+    .cart-count {
+      background: #111;
+      color: var(--accent);
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .85rem;
+      font-weight: 800;
+    }
+
+    .cart-float.pulse {
+      animation: pulse 0.5s ease;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    /* MODAL CARRITO */
+    .cart-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      background: rgba(0,0,0,.85);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .cart-modal.open {
+      display: flex;
+    }
+
+    .cart-panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: slideUp .3s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .cart-header {
+      padding: 22px 25px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cart-header h3 {
+      font-family: "Playfair Display", serif;
+      font-size: 1.4rem;
+    }
+
+    .cart-close {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 1.6rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .cart-close:hover {
+      color: var(--text);
+    }
+
+    .cart-body {
+      padding: 15px 25px;
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+
+    .cart-empty {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 15px 0;
+      border-bottom: 1px solid var(--line);
+      align-items: center;
+    }
+
+    .cart-item:last-child {
+      border-bottom: none;
+    }
+
+    .cart-item-info {
+      flex-grow: 1;
+    }
+
+    .cart-item-info h4 {
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+
+    .cart-item-info span {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: .9rem;
+    }
+
+    .cart-item-remove {
+      background: transparent;
+      border: 1px solid rgba(248,113,113,.4);
+      color: var(--danger);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: .2s;
+      flex-shrink: 0;
+    }
+
+    .cart-item-remove:hover {
+      background: var(--danger);
+      color: #fff;
+      border-color: var(--danger);
+    }
+
+    .cart-footer {
+      padding: 20px 25px;
+      border-top: 1px solid var(--line);
+      background: rgba(0,0,0,.2);
+    }
+
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+    }
+
+    .cart-total strong {
+      color: var(--accent);
+      font-size: 1.3rem;
+    }
+
+    .cart-checkout {
+      width: 100%;
+      min-height: 50px;
+      background: #25D366;
+      color: #fff;
+      border: none;
+      border-radius: 100px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 1rem;
+    }
+
+    .cart-checkout:hover {
+      background: #1da851;
+      transform: translateY(-2px);
+    }
+
+    /* CONTACT */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: .8fr 1.2fr;
+      gap: 60px;
+    }
+
+    .contact-copy p {
+      color: var(--muted);
+      margin-top: 15px;
+    }
+
+    .contact-links {
+      display: grid;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .contact-form {
+      display: grid;
+      gap: 13px;
+    }
+
+    .contact-form input,
+    .contact-form textarea,
+    .contact-form select {
+      width: 100%;
+      padding: 14px 15px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: #fff;
+      border-radius: 10px;
+      outline: none;
+    }
+
+    .contact-form textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus,
+    .contact-form select:focus {
+      border-color: var(--accent);
+    }
+
+    .form-status {
+      color: var(--accent);
+      min-height: 22px;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 35px 0;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .admin-link {
+      color: var(--muted);
+      opacity: .5;
+      font-size: .85rem;
+      transition: .25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .admin-link:hover {
+      color: var(--accent);
+      opacity: 1;
+    }
+
+    /* MODAL IMAGEN */
+    .modal {
+      position: fixed;
+      z-index: 50;
+      inset: 0;
+      display: none;
+      place-items: center;
+      padding: 20px;
+      background: rgba(0,0,0,.92);
+    }
+
+    .modal.open {
+      display: grid;
+    }
+
+    .modal img {
+      max-width: min(1100px, 94vw);
+      max-height: 85vh;
+      object-fit: contain;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 25px;
+      border: 0;
+      background: transparent;
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 900px) {
+      .nav-links {
+        gap: 13px;
+        font-size: .82rem;
+      }
+
+      .gallery,
+      .offers {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .about-grid,
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .about-image {
+        min-height: 500px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        width: min(var(--max), calc(100% - 28px));
+      }
+
+      .nav-inner {
+        height: 65px;
+      }
+
+      .nav-links a:not(.nav-cta) {
+        display: none;
+      }
+
+      .hero {
+        min-height: 90vh;
+        padding-bottom: 55px;
+      }
+
+      section:not(.hero) {
+        padding: 80px 0;
+      }
+
+      .gallery,
+      .offers {
+        grid-template-columns: 1fr;
+      }
+
+      .gallery-item,
+      .gallery-item img {
+        min-height: 430px;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .cart-float {
+        bottom: 15px;
+        right: 15px;
+        padding: 12px 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="#" class="logo" id="logo">Sutil<span>Picture</span></a>
+
+      <nav class="nav-links">
+        <a href="#galeria">Galería</a>
+        <a href="#sobre">Sobre mí</a>
+        <a href="#ofertas">Servicios</a>
+        <a href="#contacto" class="nav-cta">Contactar</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-content">
+        <div class="eyebrow">Fotografía profesional</div>
+        <h1>Historias que merecen ser recordadas.</h1>
+        <p>Capturamos momentos reales, emociones y detalles a través de fotografías de estudio, exteriores y videos profesionales.</p>
+
+        <div class="hero-actions">
+          <a class="btn" href="#galeria">Ver galería</a>
+          <a class="btn secondary" href="#contacto">Solicitar sesión</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="galeria">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">Portafolio</div>
+          <h2>Una selección de historias contadas con imágenes.</h2>
+        </div>
+
+        <div class="filters">
+          <button class="filter-btn active" data-filter="all">Todas</button>
+          <button class="filter-btn" data-filter="estudio">Estudio</button>
+          <button class="filter-btn" data-filter="exteriores">Exteriores</button>
+          <button class="filter-btn" data-filter="retratos">Retratos</button>
+          <button class="filter-btn" data-filter="eventos">Eventos</button>
+        </div>
+
+        <div class="gallery" id="gallery">
+          <div class="empty-gallery">Cargando galería...</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sobre">
+      <div class="container about-grid">
+        <div class="about-image"></div>
+
+        <div class="about-text">
+          <div class="eyebrow">Sobre el estudio</div>
+          <h2>Fotografía con intención y personalidad.</h2>
+          <p>Cada sesión es una oportunidad para contar una historia. Trabajamos con luz, composición y emoción para crear imágenes que representen la esencia de cada persona.</p>
+          <p>Realizamos sesiones de estudio, exteriores, retratos, celebraciones y videos profesionales para marcas y clientes particulares.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="ofertas">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">Servicios</div>
+          <h2>Sesiones pensadas para cada historia.</h2>
+        </div>
+
+        <div class="offers" id="offers">
+          <div class="empty-gallery">Cargando servicios...</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contacto">
+      <div class="container contact-grid">
+        <div class="contact-copy">
+          <div class="eyebrow">Contacto</div>
+          <h2>Hablemos de tu próxima sesión.</h2>
+          <p>Cuéntanos qué quieres crear y nos pondremos en contacto contigo.</p>
+
+          <div class="contact-links">
+            <a id="whatsappLink" href="https://wa.me/5356453839" target="_blank" rel="noopener">WhatsApp →</a>
+            <a id="instagramLink" href="https://instagram.com/sutil_picture" target="_blank" rel="noopener">Instagram →</a>
+          </div>
+        </div>
+
+        <form class="contact-form" id="contactForm">
+          <input type="text" name="nombre" placeholder="Tu nombre" required>
+          <input type="tel" name="telefono" placeholder="Teléfono / WhatsApp" required>
+
+          <select name="servicio">
+            <option value="">Selecciona un servicio</option>
+            <option value="estudio">Sesión de estudio</option>
+            <option value="exteriores">Sesión exterior</option>
+            <option value="retratos">Retratos</option>
+            <option value="eventos">Eventos</option>
+            <option value="video">Video profesional</option>
+          </select>
+
+          <textarea name="mensaje" placeholder="Cuéntanos qué necesitas"></textarea>
+
+          <button class="btn" type="submit">Enviar solicitud</button>
+          <p class="form-status" id="formStatus"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <span id="footerName">Sutil Picture</span>
+      <span>
+        Fotografía profesional · <span id="footerYear"></span>
+        ·
+        <a href="admin.html" class="admin-link" title="Panel de administración" aria-label="Panel de administración">⚙️ Admin</a>
+      </span>
+    </div>
+  </footer>
+
+  <!-- CARRITO FLOTANTE -->
+  <button class="cart-float" id="cartFloat" aria-label="Abrir carrito">
+    🛒 <span>Ver carrito</span>
+    <span class="cart-count" id="cartCount">0</span>
+  </button>
+
+  <!-- MODAL CARRITO -->
+  <div class="cart-modal" id="cartModal">
+    <div class="cart-panel">
+      <div class="cart-header">
+        <h3>Tu carrito</h3>
+        <button class="cart-close" id="cartClose" aria-label="Cerrar">×</button>
+      </div>
+      <div class="cart-body" id="cartBody">
+        <div class="cart-empty">Tu carrito está vacío</div>
+      </div>
+      <div class="cart-footer">
+        <div class="cart-total">
+          <span>Total estimado:</span>
+          <strong id="cartTotal">0 CUP</strong>
+        </div>
+        <button class="cart-checkout" id="cartCheckout">
+          💬 Enviar pedido por WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL IMAGEN -->
+  <div class="modal" id="imageModal">
+    <button class="modal-close" id="modalClose" aria-label="Cerrar">×</button>
+    <img id="modalImage" src="" alt="">
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    const SERVER_URL = API_URL.replace('/api', '');
+
+    const state = {
+      fotos: [],
+      contenido: {},
+      ofertas: [],
+      cart: JSON.parse(localStorage.getItem('sutil_cart') || '[]')
+    };
+
+    /* =========================================================
+       HELPERS
+    ========================================================= */
+    async function getJSON(endpoint) {
+      const response = await fetch(API_URL + endpoint);
+      if (!response.ok) throw new Error('No se pudo cargar la información.');
+      return response.json();
+    }
+
+    function parsePrecio(precio) {
+      const num = String(precio).replace(/[^\d.]/g, '');
+      return parseFloat(num) || 0;
+    }
+
+    function formatPrecio(num) {
+      return num.toLocaleString('es-ES');
+    }
+
+    /* =========================================================
+       CONTENIDO DINÁMICO
+    ========================================================= */
+    async function cargarContenidoDinamico() {
+      try {
+        const contenido = await getJSON('/contenido');
+        state.contenido = contenido;
+
+        document.querySelector('.hero .eyebrow').textContent = contenido.hero_eyebrow || '';
+        document.querySelector('.hero h1').textContent = contenido.hero_titulo || '';
+        document.querySelector('.hero p').textContent = contenido.hero_subtitulo || '';
+        document.querySelector('.about-text h2').textContent = contenido.sobre_titulo || '';
+
+        const aboutParagraphs = document.querySelectorAll('.about-text p');
+        if (aboutParagraphs[0]) aboutParagraphs[0].textContent = contenido.sobre_texto_1 || '';
+        if (aboutParagraphs[1]) aboutParagraphs[1].textContent = contenido.sobre_texto_2 || '';
+
+        if (contenido.color_accent) {
+          document.documentElement.style.setProperty('--accent', contenido.color_accent);
+        }
+
+        const nombre = contenido.nombre_negocio || 'Sutil Picture';
+        document.title = `${nombre} · Fotografía`;
+
+        const match = nombre.match(/Picture/i);
+        document.getElementById('logo').innerHTML = match
+          ? `${nombre.replace(/Picture/i, '')}<span>${match[0]}</span>`
+          : nombre;
+
+        document.getElementById('footerName').textContent = nombre;
+
+        if (contenido.whatsapp) {
+          document.getElementById('whatsappLink').href = `https://wa.me/${contenido.whatsapp}`;
+        }
+
+        if (contenido.instagram) {
+          document.getElementById('instagramLink').href = `https://instagram.com/${contenido.instagram.replace(/^@/, '')}`;
+        }
+      } catch (error) {
+        console.warn('No se pudo cargar contenido dinámico:', error);
+      }
+    }
+
+    /* =========================================================
+       GALERÍA
+    ========================================================= */
+    async function cargarFotosDinamicas() {
+      const gallery = document.getElementById('gallery');
+      try {
+        const fotos = await getJSON('/fotos');
+        state.fotos = fotos;
+        renderGallery();
+      } catch (error) {
+        gallery.innerHTML = '<div class="empty-gallery">No se pudo cargar la galería. Comprueba que el backend esté ejecutándose.</div>';
+      }
+    }
+
+    function renderGallery(filter = 'all') {
+      const gallery = document.getElementById('gallery');
+      const fotos = state.fotos.filter(foto => filter === 'all' || foto.categoria === filter);
+
+      gallery.innerHTML = '';
+
+      if (!fotos.length) {
+        gallery.innerHTML = '<div class="empty-gallery">No hay fotografías en esta categoría.</div>';
+        return;
+      }
+
+      fotos.forEach(foto => {
+        const article = document.createElement('article');
+        article.className = 'gallery-item';
+
+        const img = document.createElement('img');
+        img.src = `${SERVER_URL}/uploads/${encodeURIComponent(foto.archivo)}`;
+        img.alt = foto.titulo;
+        img.loading = 'lazy';
+
+        const overlay = document.createElement('div');
+        overlay.className = 'gallery-overlay';
+
+        const title = document.createElement('h3');
+        title.textContent = foto.titulo;
+
+        const description = document.createElement('p');
+        description.textContent = foto.descripcion || '';
+
+        overlay.append(title, description);
+        article.append(img, overlay);
+
+        article.addEventListener('click', () => {
+          document.getElementById('modalImage').src = img.src;
+          document.getElementById('modalImage').alt = foto.titulo;
+          document.getElementById('imageModal').classList.add('open');
+        });
+
+        gallery.appendChild(article);
+      });
+    }
+
+    /* =========================================================
+       OFERTAS CON CARRITO
+    ========================================================= */
+    async function cargarOfertas() {
+      const container = document.getElementById('offers');
+      try {
+        const ofertas = await getJSON('/ofertas');
+        state.ofertas = ofertas;
+        renderOfertas();
+      } catch (error) {
+        container.innerHTML = '<div class="empty-gallery">No se pudieron cargar los servicios.</div>';
+      }
+    }
+
+    function renderOfertas() {
+      const container = document.getElementById('offers');
+      container.innerHTML = '';
+
+      if (!state.ofertas.length) {
+        container.innerHTML = '<div class="empty-gallery">Los servicios se mostrarán aquí cuando sean creados desde el panel.</div>';
+        return;
+      }
+
+      state.ofertas.forEach(oferta => {
+        const article = document.createElement('article');
+        article.className = `offer${oferta.destacada ? ' featured' : ''}`;
+
+        const title = document.createElement('h3');
+        title.textContent = oferta.titulo;
+
+        const description = document.createElement('p');
+        description.textContent = oferta.descripcion || '';
+
+        const price = document.createElement('div');
+        price.className = 'offer-price';
+        price.textContent = `${oferta.precio} ${oferta.moneda}`;
+
+        const list = document.createElement('ul');
+        (oferta.caracteristicas || []).forEach(item => {
+          const li = document.createElement('li');
+          li.textContent = item;
+          list.appendChild(li);
+        });
+
+        const addBtn = document.createElement('button');
+        addBtn.className = 'offer-add-btn';
+        addBtn.dataset.id = oferta.id;
+
+        const yaEnCarrito = state.cart.some(item => item.id === oferta.id);
+        if (yaEnCarrito) {
+          addBtn.classList.add('added');
+          addBtn.innerHTML = '✓ Agregado';
+        } else {
+          addBtn.innerHTML = '+ Agregar al carrito';
+        }
+
+        addBtn.addEventListener('click', () => toggleCarrito(oferta, addBtn));
+
+        article.append(title, description, price, list, addBtn);
+        container.appendChild(article);
+      });
+    }
+
+    /* =========================================================
+       CARRITO
+    ========================================================= */
+    function toggleCarrito(oferta, btn) {
+      const index = state.cart.findIndex(item => item.id === oferta.id);
+
+      if (index > -1) {
+        state.cart.splice(index, 1);
+      } else {
+        state.cart.push({
+          id: oferta.id,
+          titulo: oferta.titulo,
+          precio: oferta.precio,
+          moneda: oferta.moneda
+        });
+      }
+
+      guardarCarrito();
+      actualizarUIcarrito();
+
+      if (btn) {
+        const enCarrito = state.cart.some(item => item.id === oferta.id);
+        btn.classList.toggle('added', enCarrito);
+        btn.innerHTML = enCarrito ? '✓ Agregado' : '+ Agregar al carrito';
+
+        if (enCarrito) {
+          const cartFloat = document.getElementById('cartFloat');
+          cartFloat.classList.remove('pulse');
+          void cartFloat.offsetWidth;
+          cartFloat.classList.add('pulse');
+        }
+      }
+    }
+
+    function guardarCarrito() {
+      localStorage.setItem('sutil_cart', JSON.stringify(state.cart));
+    }
+
+    function actualizarUIcarrito() {
+      const count = state.cart.length;
+      const cartFloat = document.getElementById('cartFloat');
+      const cartCount = document.getElementById('cartCount');
+
+      cartCount.textContent = count;
+      cartFloat.classList.toggle('visible', count > 0);
+
+      renderCartModal();
+    }
+
+    function renderCartModal() {
+      const cartBody = document.getElementById('cartBody');
+      const cartTotal = document.getElementById('cartTotal');
+
+      if (!state.cart.length) {
+        cartBody.innerHTML = '<div class="cart-empty">Tu carrito está vacío</div>';
+        cartTotal.textContent = '0 CUP';
+        return;
+      }
+
+      cartBody.innerHTML = '';
+      let total = 0;
+      let moneda = 'CUP';
+
+      state.cart.forEach(item => {
+        const num = parsePrecio(item.precio);
+        total += num;
+        moneda = item.moneda || 'CUP';
+
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <div class="cart-item-info">
+            <h4>${item.titulo}</h4>
+            <span>${item.precio} ${item.moneda}</span>
+          </div>
+          <button class="cart-item-remove" data-id="${item.id}" aria-label="Eliminar">×</button>
+        `;
+        cartBody.appendChild(div);
+      });
+
+      cartBody.querySelectorAll('.cart-item-remove').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = Number(btn.dataset.id);
+          state.cart = state.cart.filter(item => item.id !== id);
+          guardarCarrito();
+          actualizarUIcarrito();
+          renderOfertas();
+        });
+      });
+
+      cartTotal.textContent = `${formatPrecio(total)} ${moneda}`;
+    }
+
+    /* =========================================================
+       CHECKOUT POR WHATSAPP
+    ========================================================= */
+    function checkoutWhatsApp() {
+      if (!state.cart.length) return;
+
+      const whatsapp = state.contenido.whatsapp || '5356453839';
+
+      let total = 0;
+      let moneda = 'CUP';
+      let mensaje = '¡Hola! Quiero reservar los siguientes servicios:\n\n';
+
+      state.cart.forEach((item, i) => {
+        total += parsePrecio(item.precio);
+        moneda = item.moneda || 'CUP';
+        mensaje += `${i + 1}. ${item.titulo} — ${item.precio} ${item.moneda}\n`;
+      });
+
+      mensaje += `\n*Total estimado:* ${formatPrecio(total)} ${moneda}\n\n`;
+      mensaje += '¿Podrían confirmarme disponibilidad?';
+
+      const url = `https://wa.me/${whatsapp}?text=${encodeURIComponent(mensaje)}`;
+      window.open(url, '_blank');
+    }
+
+    /* =========================================================
+       EVENT LISTENERS
+    ========================================================= */
+    document.querySelectorAll('.filter-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        renderGallery(button.dataset.filter);
+      });
+    });
+
+    document.getElementById('modalClose').addEventListener('click', () => {
+      document.getElementById('imageModal').classList.remove('open');
+    });
+
+    document.getElementById('imageModal').addEventListener('click', event => {
+      if (event.target.id === 'imageModal') {
+        event.currentTarget.classList.remove('open');
+      }
+    });
+
+    document.getElementById('cartFloat').addEventListener('click', () => {
+      document.getElementById('cartModal').classList.add('open');
+    });
+
+    document.getElementById('cartClose').addEventListener('click', () => {
+      document.getElementById('cartModal').classList.remove('open');
+    });
+
+    document.getElementById('cartModal').addEventListener('click', event => {
+      if (event.target.id === 'cartModal') {
+        event.currentTarget.classList.remove('open');
+      }
+    });
+
+    document.getElementById('cartCheckout').addEventListener('click', checkoutWhatsApp);
+
+    document.getElementById('contactForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const form = event.target;
+      const status = document.getElementById('formStatus');
+      const data = Object.fromEntries(new FormData(form).entries());
+      status.textContent = 'Enviando...';
+
+      try {
+        const response = await fetch(`${API_URL}/mensajes`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'No se pudo enviar el mensaje.');
+        form.reset();
+        status.textContent = '✓ Mensaje enviado correctamente. ¡Gracias!';
+      } catch (error) {
+        status.textContent = error.message;
+      }
+    });
+
+    document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await cargarContenidoDinamico();
+      await cargarFotosDinamicas();
+      await cargarOfertas();
+      actualizarUIcarrito();
+    });
+  </script>
+</body>
+</html>

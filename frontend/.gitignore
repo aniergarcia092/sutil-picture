@@ -1,0 +1,39 @@
+@"
+# Dependencias
+node_modules/
+backend/node_modules/
+
+# Variables de entorno
+.env
+backend/.env
+*.env
+
+# Base de datos
+backend/database.db
+backend/database.db-journal
+backend/database.json
+
+# Uploads
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Archivos locales de desarrollo
+backend/hash.txt
+backend/generar-hash.js
+backend/verificar-env.js
+hash.txt
+.env.hash
+*.log
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Build
+dist/
+build/
+"@ | Out-File -FilePath .gitignore -Encoding utf8
