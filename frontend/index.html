@@ -6,6 +6,7 @@
   <meta name="description" content="Sutil Picture · Fotografía profesional">
   <meta name="theme-color" content="#111111">
   <title>Sutil Picture · Fotografía</title>
+  <link rel="icon" type="image/jpeg" href="logo.jpg">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -84,6 +85,19 @@
       font-size: 1.1rem;
       font-weight: 800;
       letter-spacing: -.04em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-img {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+      flex-shrink: 0;
+      border-radius: 6px;
+      background: var(--text);
+      padding: 2px;
     }
 
     .logo span {
@@ -681,19 +695,64 @@
       align-items: center;
     }
 
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .footer-logo {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      flex-shrink: 0;
+      background: var(--text);
+      border-radius: 8px;
+      padding: 3px;
+    }
+
+    .footer-brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .footer-brand-text strong {
+      color: var(--text);
+      font-size: 1rem;
+      letter-spacing: -.02em;
+    }
+
+    .footer-brand-text span {
+      font-size: .78rem;
+      color: var(--muted);
+    }
+
+    .footer-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
     .admin-link {
       color: var(--muted);
-      opacity: .5;
+      opacity: .7;
       font-size: .85rem;
       transition: .25s;
       display: inline-flex;
       align-items: center;
       gap: 4px;
+      border: 1px solid var(--line);
+      padding: 6px 12px;
+      border-radius: 100px;
     }
 
     .admin-link:hover {
       color: var(--accent);
       opacity: 1;
+      border-color: var(--accent);
     }
 
     /* MODAL IMAGEN */
@@ -726,6 +785,35 @@
       color: #fff;
       font-size: 2rem;
       cursor: pointer;
+    }
+
+    /* BOTÓN ADMIN FLOTANTE (MÓVIL) */
+    .admin-float {
+      position: fixed;
+      top: 88px;
+      right: 15px;
+      z-index: 30;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 16px;
+      background: rgba(16,16,16,.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: .82rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,.4);
+      transition: .25s;
+      cursor: pointer;
+    }
+
+    .admin-float:hover {
+      background: var(--accent);
+      color: #111;
+      transform: scale(1.05);
     }
 
     @media (max-width: 900px) {
@@ -762,9 +850,19 @@
         display: none;
       }
 
+      .logo-img {
+        width: 32px;
+        height: 32px;
+      }
+
+      .admin-float {
+        display: inline-flex;
+      }
+
       .hero {
         min-height: 90vh;
         padding-bottom: 55px;
+        padding-top: 140px;
       }
 
       section:not(.hero) {
@@ -784,6 +882,11 @@
       .footer-inner {
         flex-direction: column;
         text-align: center;
+        gap: 25px;
+      }
+
+      .footer-info {
+        justify-content: center;
       }
 
       .cart-float {
@@ -799,7 +902,10 @@
 
   <header class="nav">
     <div class="container nav-inner">
-      <a href="#" class="logo" id="logo">Sutil<span>Picture</span></a>
+      <a href="#" class="logo" id="logo">
+        <img src="logo.jpg" alt="Sutil Picture" class="logo-img" id="navLogo">
+        <span id="logoText">Sutil<span>Picture</span></span>
+      </a>
 
       <nav class="nav-links">
         <a href="#galeria">Galería</a>
@@ -809,6 +915,10 @@
       </nav>
     </div>
   </header>
+
+  <a href="admin.html" class="admin-float" title="Panel de administración">
+    ⚙️ Admin
+  </a>
 
   <main>
     <section class="hero">
@@ -908,12 +1018,20 @@
 
   <footer>
     <div class="container footer-inner">
-      <span id="footerName">Sutil Picture</span>
-      <span>
-        Fotografía profesional · <span id="footerYear"></span>
-        ·
-        <a href="admin.html" class="admin-link" title="Panel de administración" aria-label="Panel de administración">⚙️ Admin</a>
-      </span>
+      <div class="footer-brand">
+        <img src="logo.jpg" alt="Sutil Picture" class="footer-logo">
+        <div class="footer-brand-text">
+          <strong id="footerName">Sutil Picture</strong>
+          <span>Fotografía profesional</span>
+        </div>
+      </div>
+
+      <div class="footer-info">
+        <span>© <span id="footerYear"></span></span>
+        <a href="admin.html" class="admin-link" title="Panel de administración" aria-label="Panel de administración">
+          ⚙️ Admin
+        </a>
+      </div>
     </div>
   </footer>
 
@@ -996,7 +1114,7 @@
         document.title = `${nombre} · Fotografía`;
 
         const match = nombre.match(/Picture/i);
-        document.getElementById('logo').innerHTML = match
+        document.getElementById('logoText').innerHTML = match
           ? `${nombre.replace(/Picture/i, '')}<span>${match[0]}</span>`
           : nombre;
 
