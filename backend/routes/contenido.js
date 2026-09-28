@@ -1,9 +1,8 @@
 const express = require('express');
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 const db = require('../database');
 const { verificarToken } = require('../middleware/auth');
+const { storage, requireCloudinary } = require('../utils/cloudinary');
 
 const router = express.Router();
 
@@ -53,25 +52,10 @@ router.put('/', verificarToken, (req, res) => {
 });
 
 /* =========================================================
-   MULTER - Configuración para imagen "Sobre"
+   MULTER - Configuración para subir imagen "Sobre" a Cloudinary
 ========================================================= */
-const uploadDir = path.join(__dirname, '..', 'uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storageSobre = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase() || '.jpg';
-    cb(null, `sobre-imagen${ext}`);
-  }
-});
-
 const uploadSobre = multer({
-  storage: storageSobre,
+  storage,
   limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
   fileFilter: (req, file, cb) => {
     const ok = /image\/(jpeg|jpg|png|webp)/.test(file.mimetype);
@@ -86,11 +70,15 @@ const uploadSobre = multer({
 router.post(
   '/sobre-imagen',
   verificarToken,
+  requireCloudinary,
   uploadSobre.single('archivo'),
   (req, res) => {
     if (!req.file) {
       return res.status(400).json({ error: 'No se ha subido ningún archivo' });
     }
+
+    // req.file.path es la URL completa de Cloudinary
+    const urlCloudinary = req.file.path;
 
     const stmt = db.prepare(`
       INSERT INTO contenido (clave, valor, actualizado_en)
@@ -100,11 +88,11 @@ router.post(
         actualizado_en=CURRENT_TIMESTAMP
     `);
 
-    stmt.run('sobre_imagen', req.file.filename);
+    stmt.run('sobre_imagen', urlCloudinary);
 
     res.json({
       ok: true,
-      archivo: req.file.filename,
+      archivo: urlCloudinary,
       mensaje: 'Imagen actualizada correctamente'
     });
   }

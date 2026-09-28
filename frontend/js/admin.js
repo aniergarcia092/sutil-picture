@@ -137,7 +137,8 @@ async function cargarFotos() {
       div.className = 'foto-admin';
 
       const img = document.createElement('img');
-      img.src = `${SERVER}/uploads/${encodeURIComponent(foto.archivo)}`;
+      // ✅ foto.archivo es la URL completa de Cloudinary
+      img.src = foto.archivo;
       img.alt = foto.titulo;
 
       const info = document.createElement('div');
@@ -307,12 +308,12 @@ async function cargarContenido() {
       }
     });
 
-    // Cargar imagen "Sobre"
+    // ✅ Cargar imagen "Sobre" (URL completa de Cloudinary)
     if (data.sobre_imagen) {
       const preview = document.getElementById('sobreImagenPreview');
       const wrap = document.getElementById('sobreImagenPreviewWrap');
       if (preview && wrap) {
-        preview.src = `${SERVER}/uploads/${data.sobre_imagen}?t=${Date.now()}`;
+        preview.src = data.sobre_imagen;
         wrap.style.display = 'block';
       }
     }
@@ -327,6 +328,9 @@ document.getElementById('formContenido').addEventListener('submit', async event 
   const status = document.getElementById('contenidoStatus');
   const formData = new FormData(event.target);
   const data = Object.fromEntries(formData.entries());
+
+  // Eliminar el input file del envío (no aplica al guardar contenido)
+  delete data.sobreImagenInput;
 
   try {
     await api('/contenido', {
@@ -374,7 +378,8 @@ document.getElementById('subirSobreBtn').addEventListener('click', async () => {
     input.value = '';
 
     if (preview && wrap) {
-      preview.src = `${SERVER}/uploads/${result.archivo}?t=${Date.now()}`;
+      // ✅ result.archivo es la URL completa de Cloudinary
+      preview.src = result.archivo;
       wrap.style.display = 'block';
     }
   } catch (error) {
