@@ -1,0 +1,21 @@
+name: Keep Render Alive
+
+on:
+  schedule:
+    # Se ejecuta cada 14 minutos para evitar que Render se duerma
+    # (Render duerme a los 15 minutos de inactividad)
+    - cron: '*/14 * * * *'
+  
+  # Permite ejecutarlo manualmente desde GitHub
+  workflow_dispatch:
+
+jobs:
+  ping:
+    name: Ping backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hacer ping al backend
+        run: |
+          echo "🔄 Iniciando ping a las $(date)"
+          curl -sSfL --max-time 30 https://sutil-picture-api.onrender.com/api/health || true
+          echo "✅ Ping completado a las $(date)"
