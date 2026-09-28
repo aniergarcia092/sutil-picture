@@ -304,9 +304,7 @@
 
     .about-image {
       min-height: 620px;
-      background:
-        linear-gradient(0deg, rgba(0,0,0,.1), rgba(0,0,0,.1)),
-        url("https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=1000&q=85") center/cover;
+      background: #1a1a1a;
       border-radius: 12px;
       overflow: hidden;
     }
@@ -1184,7 +1182,6 @@
         article.className = 'gallery-item';
 
         const img = document.createElement('img');
-        // foto.archivo ahora es la URL completa de Cloudinary
         img.src = foto.archivo;
         img.alt = foto.titulo;
         img.loading = 'lazy';
