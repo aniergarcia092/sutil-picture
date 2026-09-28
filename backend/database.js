@@ -12,6 +12,7 @@ db.exec(`
     descripcion TEXT,
     categoria TEXT NOT NULL,
     archivo TEXT NOT NULL,
+    cloudinary_public_id TEXT,
     orden INTEGER DEFAULT 0,
     creado_en DATETIME DEFAULT CURRENT_TIMESTAMP
   );
@@ -44,6 +45,29 @@ db.exec(`
   );
 `);
 
+/* =========================================================
+   MIGRACIONES AUTOMÁTICAS
+   Añade columnas nuevas a tablas existentes sin perder datos
+========================================================= */
+function migrarFotos() {
+  try {
+    const columns = db.prepare('PRAGMA table_info(fotos)').all();
+    const existentes = columns.map(col => col.name);
+
+    if (!existentes.includes('cloudinary_public_id')) {
+      db.exec('ALTER TABLE fotos ADD COLUMN cloudinary_public_id TEXT');
+      console.log('✅ Migración: columna cloudinary_public_id añadida a fotos');
+    }
+  } catch (err) {
+    console.error('Error en migración de fotos:', err);
+  }
+}
+
+migrarFotos();
+
+/* =========================================================
+   CONTENIDO POR DEFECTO
+========================================================= */
 const countContenido = db.prepare('SELECT COUNT(*) AS c FROM contenido').get();
 
 if (countContenido.c === 0) {
