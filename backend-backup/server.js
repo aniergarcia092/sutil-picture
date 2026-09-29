@@ -2,15 +2,18 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const rateLimit = require('express-rate-limit');
 
-const { initDB } = require('./database');
+require('./database');
 
 const app = express();
 
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -25,22 +28,9 @@ app.use('/api/fotos', require('./routes/fotos'));
 app.use('/api/contenido', require('./routes/contenido'));
 app.use('/api/ofertas', require('./routes/ofertas'));
 app.use('/api/mensajes', require('./routes/mensajes'));
-app.use('/api/reservas', require('./routes/reservas'));  // ✅ ESTA LÍNEA ES CLAVE
 
 app.get('/api/health', (req, res) => {
-  res.json({
-    ok: true,
-    ts: Date.now(),
-    cloudinaryConfigured: Boolean(
-      process.env.CLOUDINARY_CLOUD_NAME &&
-      process.env.CLOUDINARY_API_KEY &&
-      process.env.CLOUDINARY_API_SECRET
-    ),
-    tursoConfigured: Boolean(
-      process.env.TURSO_DATABASE_URL &&
-      process.env.TURSO_AUTH_TOKEN
-    )
-  });
+  res.json({ ok: true, ts: Date.now() });
 });
 
 app.get('/', (req, res) => {
@@ -53,17 +43,6 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
-(async () => {
-  try {
-    await initDB();
-
-    app.listen(PORT, () => {
-      console.log(`✅ Backend corriendo en http://localhost:${PORT}`);
-      console.log(`✅ Turso: ${process.env.TURSO_DATABASE_URL ? 'conectado' : 'NO configurado'}`);
-      console.log(`✅ Cloudinary: ${process.env.CLOUDINARY_CLOUD_NAME ? 'conectado' : 'NO configurado'}`);
-    });
-  } catch (err) {
-    console.error('❌ Error al inicializar la base de datos:', err);
-    process.exit(1);
-  }
-})();
+app.listen(PORT, () => {
+  console.log(`✅ Backend corriendo en http://localhost:${PORT}`);
+});

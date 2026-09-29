@@ -9,6 +9,7 @@ const db = createClient({
    INICIALIZAR BASE DE DATOS
 ========================================================= */
 async function initDB() {
+  // Crear tablas
   await db.execute(`
     CREATE TABLE IF NOT EXISTS fotos (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -55,21 +56,6 @@ async function initDB() {
     )
   `);
 
-  // ✅ NUEVA TABLA: RESERVAS
-  await db.execute(`
-    CREATE TABLE IF NOT EXISTS reservas (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      nombre TEXT NOT NULL,
-      telefono TEXT NOT NULL,
-      items TEXT,
-      total REAL DEFAULT 0,
-      moneda TEXT DEFAULT 'CUP',
-      estado TEXT DEFAULT 'pendiente',
-      creado_en DATETIME DEFAULT CURRENT_TIMESTAMP,
-      confirmado_en DATETIME
-    )
-  `);
-
   // Migración: añadir columna cloudinary_public_id si no existe
   try {
     const result = await db.execute('PRAGMA table_info(fotos)');
@@ -82,7 +68,7 @@ async function initDB() {
     console.error('Error en migración:', err.message);
   }
 
-  // Contenido por defecto
+  // Insertar contenido por defecto si está vacío
   const count = await db.execute('SELECT COUNT(*) AS c FROM contenido');
   const total = Number(count.rows[0].c);
 

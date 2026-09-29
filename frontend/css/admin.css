@@ -14,6 +14,7 @@
   --accent: #d8ad70;
   --danger: #e74c3c;
   --success: #54c28b;
+  --warning: #f0b429;
 }
 
 body {
@@ -423,8 +424,213 @@ button {
   object-fit: cover;
 }
 
+/* =========================================================
+   FINANZAS
+========================================================= */
+
+.finanzas-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.finanzas-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+  display: grid;
+  gap: 6px;
+  transition: transform .2s, border-color .2s;
+}
+
+.finanzas-card:hover {
+  transform: translateY(-3px);
+}
+
+.finanzas-card.destacada {
+  border-color: var(--accent);
+  background: linear-gradient(135deg, rgba(216,173,112,.08), transparent);
+}
+
+.finanzas-card.total {
+  border-color: var(--success);
+  background: linear-gradient(135deg, rgba(84,194,139,.08), transparent);
+}
+
+.finanzas-label {
+  color: var(--muted);
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  font-weight: 700;
+}
+
+.finanzas-card strong {
+  display: block;
+  font-size: 1.7rem;
+  color: var(--accent);
+  letter-spacing: -.03em;
+}
+
+.finanzas-card.total strong {
+  color: var(--success);
+}
+
+.finanzas-card small {
+  color: var(--muted);
+  font-size: .82rem;
+}
+
+.finanzas-filtros {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.filtro-finanzas {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  padding: 9px 16px;
+  border-radius: 100px;
+  cursor: pointer;
+  font-size: .88rem;
+  transition: .2s;
+}
+
+.filtro-finanzas:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.filtro-finanzas.active {
+  color: #111;
+  background: var(--accent);
+  border-color: var(--accent);
+  font-weight: 700;
+}
+
+/* Reservas individuales */
+
+.item-admin.reserva-pendiente {
+  border-left: 4px solid var(--warning);
+}
+
+.item-admin.reserva-confirmada {
+  border-left: 4px solid var(--success);
+}
+
+.item-admin.reserva-rechazada {
+  border-left: 4px solid var(--danger);
+  opacity: .7;
+}
+
+.reserva-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.reserva-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 100px;
+  font-size: .7rem;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.badge-pendiente {
+  background: rgba(240,180,41,.15);
+  color: var(--warning);
+}
+
+.badge-confirmada {
+  background: rgba(84,194,139,.15);
+  color: var(--success);
+}
+
+.badge-rechazada {
+  background: rgba(231,76,60,.15);
+  color: var(--danger);
+}
+
+.reserva-items {
+  list-style: none;
+  padding-left: 0;
+  margin: 10px 0;
+  color: var(--muted);
+  font-size: .88rem;
+}
+
+.reserva-items li {
+  padding: 3px 0;
+}
+
+.reserva-items li::before {
+  content: "• ";
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.reserva-total {
+  display: block;
+  color: var(--accent);
+  font-size: 1.15rem;
+  margin: 12px 0 6px;
+}
+
+.reserva-fecha {
+  display: block;
+  color: var(--muted);
+  font-size: .78rem;
+  margin-bottom: 10px;
+}
+
+.btn-confirmar {
+  flex: 1;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--success);
+  color: #111;
+  font-weight: 800;
+  cursor: pointer;
+  transition: opacity .2s;
+}
+
+.btn-confirmar:hover {
+  opacity: .9;
+}
+
+.btn-rechazar {
+  flex: 1;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--danger);
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+  transition: opacity .2s;
+}
+
+.btn-rechazar:hover {
+  opacity: .9;
+}
+
 @media (max-width: 950px) {
   .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .finanzas-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -477,6 +683,10 @@ button {
     grid-template-columns: 1fr 1fr;
   }
 
+  .finanzas-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
   .heading-row {
     align-items: start;
     flex-direction: column;
@@ -490,6 +700,15 @@ button {
 
   .stats-grid {
     grid-template-columns: 1fr;
+  }
+
+  .finanzas-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reserva-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
@@ -537,7 +756,6 @@ button {
   gap: 8px;
 }
 
-/* Mejorar el botón "Ver web pública" del sidebar */
 .sidebar .view-site {
   display: flex;
   align-items: center;
@@ -561,7 +779,6 @@ button {
   transform: translateY(-2px);
 }
 
-/* Utilidad: ancho completo en grid */
 .full-width {
   grid-column: 1 / -1;
 }

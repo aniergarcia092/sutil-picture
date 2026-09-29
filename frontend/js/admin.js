@@ -78,6 +78,7 @@ function mostrarPanel() {
   cargarOfertas();
   cargarContenido();
   cargarMensajes();
+  cargarFinanzas();
 }
 
 document.querySelectorAll('.sidebar nav button').forEach(button => {
@@ -137,7 +138,6 @@ async function cargarFotos() {
       div.className = 'foto-admin';
 
       const img = document.createElement('img');
-      // ✅ foto.archivo es la URL completa de Cloudinary
       img.src = foto.archivo;
       img.alt = foto.titulo;
 
@@ -308,7 +308,6 @@ async function cargarContenido() {
       }
     });
 
-    // ✅ Cargar imagen "Sobre" (URL completa de Cloudinary)
     if (data.sobre_imagen) {
       const preview = document.getElementById('sobreImagenPreview');
       const wrap = document.getElementById('sobreImagenPreviewWrap');
@@ -329,7 +328,6 @@ document.getElementById('formContenido').addEventListener('submit', async event 
   const formData = new FormData(event.target);
   const data = Object.fromEntries(formData.entries());
 
-  // Eliminar el input file del envío (no aplica al guardar contenido)
   delete data.sobreImagenInput;
 
   try {
@@ -378,7 +376,6 @@ document.getElementById('subirSobreBtn').addEventListener('click', async () => {
     input.value = '';
 
     if (preview && wrap) {
-      // ✅ result.archivo es la URL completa de Cloudinary
       preview.src = result.archivo;
       wrap.style.display = 'block';
     }
@@ -455,6 +452,159 @@ async function cargarMensajes() {
     console.error(error);
   }
 }
+
+/* =========================================================
+   FINANZAS (RESERVAS)
+========================================================= */
+let filtroFinanzas = 'todas';
+
+async function cargarFinanzas() {
+  try {
+    // Cargar estadísticas
+    const stats = await api('/reservas/stats');
+
+    document.getElementById('statHoy').textContent =
+      `${Number(stats.hoy.total).toLocaleString('es-ES')} CUP`;
+    document.getElementById('statSemana').textContent =
+      `${Number(stats.semana.total).toLocaleString('es-ES')} CUP`;
+    document.getElementById('statMes').textContent =
+      `${Number(stats.mes.total).toLocaleString('es-ES')} CUP`;
+    document.getElementById('statTotal').textContent =
+      `${Number(stats.total.total).toLocaleString('es-ES')} CUP`;
+
+    document.getElementById('statHoyCant').textContent =
+      `${stats.hoy.cantidad} reservas`;
+    document.getElementById('statSemanaCant').textContent =
+      `${stats.semana.cantidad} reservas`;
+    document.getElementById('statMesCant').textContent =
+      `${stats.mes.cantidad} reservas`;
+    document.getElementById('statTotalCant').textContent =
+      `${stats.total.cantidad} reservas`;
+
+    // Cargar lista de reservas
+    const reservas = await api('/reservas');
+    renderReservas(reservas);
+  } catch (error) {
+    console.error('Error cargando finanzas:', error);
+  }
+}
+
+function renderReservas(reservas) {
+  const container = document.getElementById('listaReservas');
+  container.innerHTML = '';
+
+  // Aplicar filtro
+  let filtradas = reservas;
+  if (filtroFinanzas !== 'todas') {
+    filtradas = reservas.filter(r => r.estado === filtroFinanzas);
+  }
+
+  if (!filtradas.length) {
+    container.innerHTML = '<p class="status">No hay reservas en esta categoría.</p>';
+    return;
+  }
+
+  filtradas.forEach(reserva => {
+    const div = document.createElement('article');
+    div.className = `item-admin reserva-${reserva.estado}`;
+
+    const header = document.createElement('div');
+    header.className = 'reserva-header';
+
+    const title = document.createElement('h4');
+    title.textContent = `#${reserva.id} · ${reserva.nombre}`;
+
+    const badge = document.createElement('span');
+    badge.className = `reserva-badge badge-${reserva.estado}`;
+    badge.textContent = reserva.estado.toUpperCase();
+
+    header.append(title, badge);
+
+    const info = document.createElement('p');
+    info.textContent = `📞 ${reserva.telefono}`;
+
+    const itemsList = document.createElement('ul');
+    itemsList.className = 'reserva-items';
+
+    (reserva.items || []).forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = `${item.titulo} — ${item.precio} ${item.moneda || 'CUP'}`;
+      itemsList.appendChild(li);
+    });
+
+    const totalEl = document.createElement('strong');
+    totalEl.className = 'reserva-total';
+    totalEl.textContent = `Total: ${Number(reserva.total).toLocaleString('es-ES')} ${reserva.moneda || 'CUP'}`;
+
+    const date = document.createElement('small');
+    date.className = 'reserva-fecha';
+    date.textContent = new Date(reserva.creado_en).toLocaleString();
+
+    const actions = document.createElement('div');
+    actions.className = 'acciones';
+
+    if (reserva.estado === 'pendiente') {
+      const confirmBtn = document.createElement('button');
+      confirmBtn.className = 'btn-confirmar';
+      confirmBtn.textContent = '✅ Hecho';
+
+      confirmBtn.addEventListener('click', async () => {
+        if (!confirm('¿Confirmar esta reserva y sumarla a finanzas?')) return;
+        try {
+          await api(`/reservas/${reserva.id}/confirmar`, { method: 'PUT' });
+          await cargarFinanzas();
+        } catch (error) {
+          alert(error.message);
+        }
+      });
+
+      const rejectBtn = document.createElement('button');
+      rejectBtn.className = 'btn-rechazar';
+      rejectBtn.textContent = '❌ Rechazar';
+
+      rejectBtn.addEventListener('click', async () => {
+        if (!confirm('¿Rechazar esta reserva?')) return;
+        try {
+          await api(`/reservas/${reserva.id}/rechazar`, { method: 'PUT' });
+          await cargarFinanzas();
+        } catch (error) {
+          alert(error.message);
+        }
+      });
+
+      actions.append(confirmBtn, rejectBtn);
+    } else {
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'btn-danger';
+      deleteBtn.textContent = 'Eliminar del historial';
+
+      deleteBtn.addEventListener('click', async () => {
+        if (!confirm('¿Eliminar esta reserva del historial?')) return;
+        try {
+          await api(`/reservas/${reserva.id}`, { method: 'DELETE' });
+          await cargarFinanzas();
+        } catch (error) {
+          alert(error.message);
+        }
+      });
+
+      actions.appendChild(deleteBtn);
+    }
+
+    div.append(header, info, itemsList, totalEl, date, actions);
+    container.appendChild(div);
+  });
+}
+
+// Botones de filtro
+document.querySelectorAll('.filtro-finanzas').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filtro-finanzas').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filtroFinanzas = btn.dataset.filtro;
+    cargarFinanzas();
+  });
+});
 
 /* =========================================================
    INICIALIZACIÓN

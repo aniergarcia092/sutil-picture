@@ -41,6 +41,7 @@
         <button data-tab="dashboard" class="active">📊 Dashboard</button>
         <button data-tab="fotos">🖼️ Fotos</button>
         <button data-tab="ofertas">💰 Ofertas</button>
+        <button data-tab="finanzas">💵 Finanzas</button>
         <button data-tab="contenido">📝 Contenido</button>
         <button data-tab="mensajes">✉️ Mensajes</button>
       </nav>
@@ -145,6 +146,51 @@
         </div>
 
         <div id="listaOfertas" class="lista-admin"></div>
+      </div>
+
+      <!-- ==================== FINANZAS ==================== -->
+      <div class="tab" id="tab-finanzas" hidden>
+        <div class="page-heading">
+          <div>
+            <span class="eyebrow">Ingresos</span>
+            <h1>Finanzas</h1>
+          </div>
+        </div>
+
+        <div class="finanzas-grid">
+          <div class="finanzas-card destacada">
+            <span class="finanzas-label">Hoy</span>
+            <strong id="statHoy">0 CUP</strong>
+            <small id="statHoyCant">0 reservas</small>
+          </div>
+
+          <div class="finanzas-card">
+            <span class="finanzas-label">Últimos 7 días</span>
+            <strong id="statSemana">0 CUP</strong>
+            <small id="statSemanaCant">0 reservas</small>
+          </div>
+
+          <div class="finanzas-card">
+            <span class="finanzas-label">Últimos 30 días</span>
+            <strong id="statMes">0 CUP</strong>
+            <small id="statMesCant">0 reservas</small>
+          </div>
+
+          <div class="finanzas-card total">
+            <span class="finanzas-label">Total histórico</span>
+            <strong id="statTotal">0 CUP</strong>
+            <small id="statTotalCant">0 reservas</small>
+          </div>
+        </div>
+
+        <div class="finanzas-filtros">
+          <button class="filtro-finanzas active" data-filtro="todas">Todas</button>
+          <button class="filtro-finanzas" data-filtro="pendiente">⏳ Pendientes</button>
+          <button class="filtro-finanzas" data-filtro="confirmada">✅ Confirmadas</button>
+          <button class="filtro-finanzas" data-filtro="rechazada">❌ Rechazadas</button>
+        </div>
+
+        <div id="listaReservas" class="lista-admin"></div>
       </div>
 
       <div class="tab" id="tab-contenido" hidden>

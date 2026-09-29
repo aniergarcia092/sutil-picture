@@ -615,6 +615,28 @@
       font-size: 1.3rem;
     }
 
+    /* FORMULARIO DE RESERVA (dentro del carrito) */
+    .cart-form {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .cart-form input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      background: var(--bg);
+      color: #fff;
+      border-radius: 10px;
+      outline: none;
+      font-size: .95rem;
+    }
+
+    .cart-form input:focus {
+      border-color: var(--accent);
+    }
+
     .cart-checkout {
       width: 100%;
       min-height: 50px;
@@ -635,6 +657,20 @@
     .cart-checkout:hover {
       background: #1da851;
       transform: translateY(-2px);
+    }
+
+    .cart-checkout:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .cart-checkout-status {
+      text-align: center;
+      color: var(--accent);
+      font-size: .85rem;
+      min-height: 20px;
+      margin-top: 8px;
     }
 
     /* CONTACT */
@@ -1069,9 +1105,17 @@
           <span>Total estimado:</span>
           <strong id="cartTotal">0 CUP</strong>
         </div>
+
+        <!-- Formulario de reserva -->
+        <div class="cart-form">
+          <input type="text" id="cartNombre" placeholder="Tu nombre" autocomplete="name">
+          <input type="tel" id="cartTelefono" placeholder="Tu teléfono / WhatsApp" autocomplete="tel">
+        </div>
+
         <button class="cart-checkout" id="cartCheckout">
           💬 Enviar pedido por WhatsApp
         </button>
+        <p class="cart-checkout-status" id="cartCheckoutStatus"></p>
       </div>
     </div>
   </div>
@@ -1143,7 +1187,6 @@
           document.getElementById('instagramLink').href = `https://instagram.com/${contenido.instagram.replace(/^@/, '')}`;
         }
 
-        // Cargar imagen "Sobre" desde Cloudinary
         if (contenido.sobre_imagen) {
           const aboutImage = document.getElementById('aboutImage');
           if (aboutImage) {
@@ -1358,8 +1401,24 @@
       cartTotal.textContent = `${formatPrecio(total)} ${moneda}`;
     }
 
-    function checkoutWhatsApp() {
-      if (!state.cart.length) return;
+    /* =========================================================
+       CHECKOUT: crea la reserva y abre WhatsApp
+    ========================================================= */
+    async function checkoutWhatsApp() {
+      const status = document.getElementById('cartCheckoutStatus');
+      const nombre = document.getElementById('cartNombre').value.trim();
+      const telefono = document.getElementById('cartTelefono').value.trim();
+
+      // Validaciones
+      if (!state.cart.length) {
+        status.textContent = 'Tu carrito está vacío.';
+        return;
+      }
+
+      if (!nombre || !telefono) {
+        status.textContent = 'Completa tu nombre y teléfono para continuar.';
+        return;
+      }
 
       const whatsapp = state.contenido.whatsapp || '5356453839';
 
@@ -1374,10 +1433,59 @@
       });
 
       mensaje += `\n*Total estimado:* ${formatPrecio(total)} ${moneda}\n\n`;
+      mensaje += `*Nombre:* ${nombre}\n`;
+      mensaje += `*Teléfono:* ${telefono}\n\n`;
       mensaje += '¿Podrían confirmarme disponibilidad?';
 
-      const url = `https://wa.me/${whatsapp}?text=${encodeURIComponent(mensaje)}`;
-      window.open(url, '_blank');
+      // 1. Guardar la reserva en el backend
+      status.textContent = 'Registrando reserva...';
+
+      try {
+        const response = await fetch(`${API_URL}/reservas`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nombre,
+            telefono,
+            items: state.cart.map(i => ({
+              titulo: i.titulo,
+              precio: i.precio,
+              moneda: i.moneda
+            })),
+            total,
+            moneda
+          })
+        });
+
+        if (!response.ok) {
+          const err = await response.json().catch(() => ({}));
+          throw new Error(err.error || 'Error al registrar la reserva');
+        }
+
+        status.textContent = '✓ Reserva registrada. Abriendo WhatsApp...';
+
+        // 2. Vaciar carrito
+        state.cart = [];
+        guardarCarrito();
+        actualizarUIcarrito();
+        renderOfertas();
+
+        // 3. Limpiar formulario
+        document.getElementById('cartNombre').value = '';
+        document.getElementById('cartTelefono').value = '';
+
+        // 4. Abrir WhatsApp
+        const url = `https://wa.me/${whatsapp}?text=${encodeURIComponent(mensaje)}`;
+        window.open(url, '_blank');
+
+        // 5. Cerrar carrito después de 1.5 seg
+        setTimeout(() => {
+          document.getElementById('cartModal').classList.remove('open');
+          status.textContent = '';
+        }, 1500);
+      } catch (error) {
+        status.textContent = 'Error: ' + error.message;
+      }
     }
 
     document.querySelectorAll('.filter-btn').forEach(button => {
