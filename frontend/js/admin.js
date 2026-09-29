@@ -523,6 +523,30 @@ function renderReservas(reservas) {
     const info = document.createElement('p');
     info.textContent = `📞 ${reserva.telefono}`;
 
+    // ✅ FECHA Y HORA DE LA SESIÓN
+    if (reserva.fecha_deseada) {
+      const sesion = document.createElement('div');
+      sesion.className = 'reserva-sesion';
+
+      const fechaObj = new Date(reserva.fecha_deseada + 'T00:00:00');
+      const fechaFormateada = fechaObj.toLocaleDateString('es-ES', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+
+      sesion.innerHTML = `
+        <span class="reserva-sesion-icon">📅</span>
+        <span>${fechaFormateada}</span>
+        ${reserva.hora_deseada ? `<span class="reserva-sesion-hora">· ${reserva.hora_deseada}</span>` : ''}
+      `;
+
+      div.append(header, info, sesion);
+    } else {
+      div.append(header, info);
+    }
+
     const itemsList = document.createElement('ul');
     itemsList.className = 'reserva-items';
 
@@ -538,7 +562,7 @@ function renderReservas(reservas) {
 
     const date = document.createElement('small');
     date.className = 'reserva-fecha';
-    date.textContent = new Date(reserva.creado_en).toLocaleString();
+    date.textContent = `Reservado el ${new Date(reserva.creado_en).toLocaleString('es-ES')}`;
 
     const actions = document.createElement('div');
     actions.className = 'acciones';
@@ -591,7 +615,7 @@ function renderReservas(reservas) {
       actions.appendChild(deleteBtn);
     }
 
-    div.append(header, info, itemsList, totalEl, date, actions);
+    div.append(itemsList, totalEl, date, actions);
     container.appendChild(div);
   });
 }

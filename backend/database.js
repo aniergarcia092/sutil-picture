@@ -55,7 +55,6 @@ async function initDB() {
     )
   `);
 
-  // ✅ NUEVA TABLA: RESERVAS
   await db.execute(`
     CREATE TABLE IF NOT EXISTS reservas (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -64,25 +63,51 @@ async function initDB() {
       items TEXT,
       total REAL DEFAULT 0,
       moneda TEXT DEFAULT 'CUP',
+      fecha_deseada TEXT,
+      hora_deseada TEXT,
       estado TEXT DEFAULT 'pendiente',
       creado_en DATETIME DEFAULT CURRENT_TIMESTAMP,
       confirmado_en DATETIME
     )
   `);
 
-  // Migración: añadir columna cloudinary_public_id si no existe
+  // =========================================================
+  // MIGRACIONES AUTOMÁTICAS
+  // =========================================================
+
+  // Migración: fotos.cloudinary_public_id
   try {
     const result = await db.execute('PRAGMA table_info(fotos)');
     const hasColumn = result.rows.some(row => row.name === 'cloudinary_public_id');
     if (!hasColumn) {
       await db.execute('ALTER TABLE fotos ADD COLUMN cloudinary_public_id TEXT');
-      console.log('✅ Migración: cloudinary_public_id añadida');
+      console.log('✅ Migración: cloudinary_public_id añadida a fotos');
     }
   } catch (err) {
-    console.error('Error en migración:', err.message);
+    console.error('Error en migración de fotos:', err.message);
   }
 
-  // Contenido por defecto
+  // Migración: reservas.fecha_deseada y reservas.hora_deseada
+  try {
+    const resColumns = await db.execute('PRAGMA table_info(reservas)');
+    const nombres = resColumns.rows.map(row => row.name);
+
+    if (!nombres.includes('fecha_deseada')) {
+      await db.execute('ALTER TABLE reservas ADD COLUMN fecha_deseada TEXT');
+      console.log('✅ Migración: fecha_deseada añadida a reservas');
+    }
+
+    if (!nombres.includes('hora_deseada')) {
+      await db.execute('ALTER TABLE reservas ADD COLUMN hora_deseada TEXT');
+      console.log('✅ Migración: hora_deseada añadida a reservas');
+    }
+  } catch (err) {
+    console.error('Error en migración de reservas:', err.message);
+  }
+
+  // =========================================================
+  // CONTENIDO POR DEFECTO
+  // =========================================================
   const count = await db.execute('SELECT COUNT(*) AS c FROM contenido');
   const total = Number(count.rows[0].c);
 

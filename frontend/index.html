@@ -622,7 +622,8 @@
       margin-bottom: 15px;
     }
 
-    .cart-form input {
+    .cart-form input,
+    .cart-form select {
       width: 100%;
       padding: 12px 14px;
       border: 1px solid var(--line);
@@ -633,8 +634,25 @@
       font-size: .95rem;
     }
 
-    .cart-form input:focus {
+    .cart-form input:focus,
+    .cart-form select:focus {
       border-color: var(--accent);
+    }
+
+    .cart-form input[type="date"] {
+      color-scheme: dark;
+    }
+
+    .cart-form .aviso-hora {
+      color: var(--muted);
+      font-size: .78rem;
+      text-align: center;
+      margin: 0;
+      min-height: 18px;
+    }
+
+    .cart-form .aviso-hora.ocupada {
+      color: var(--danger);
     }
 
     .cart-checkout {
@@ -734,6 +752,12 @@
 
     .footer-inner {
       display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .footer-row {
+      display: flex;
       justify-content: space-between;
       gap: 20px;
       align-items: center;
@@ -797,6 +821,47 @@
       color: var(--accent);
       opacity: 1;
       border-color: var(--accent);
+    }
+
+    /* =========================================================
+       FOOTER - DESARROLLADOR
+    ========================================================= */
+    .footer-devs {
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: .83rem;
+      color: var(--muted);
+    }
+
+    .footer-devs-label {
+      color: var(--muted);
+    }
+
+    .footer-devs-name {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .footer-devs a {
+      color: var(--muted);
+      transition: .25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: 100px;
+      border: 1px solid var(--line);
+    }
+
+    .footer-devs a:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      transform: translateY(-2px);
     }
 
     /* MODAL IMAGEN */
@@ -886,6 +951,16 @@
       .about-image {
         min-height: 500px;
       }
+
+      .footer-row {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+      }
+
+      .footer-info {
+        justify-content: center;
+      }
     }
 
     @media (max-width: 600px) {
@@ -928,16 +1003,6 @@
       .gallery-item,
       .gallery-item img {
         min-height: 430px;
-      }
-
-      .footer-inner {
-        flex-direction: column;
-        text-align: center;
-        gap: 25px;
-      }
-
-      .footer-info {
-        justify-content: center;
       }
 
       .cart-float {
@@ -1069,18 +1134,34 @@
 
   <footer>
     <div class="container footer-inner">
-      <div class="footer-brand">
-        <img src="logo.jpg" alt="Sutil Picture" class="footer-logo">
-        <div class="footer-brand-text">
-          <strong id="footerName">Sutil Picture</strong>
-          <span>Fotografía profesional</span>
+      <div class="footer-row">
+        <div class="footer-brand">
+          <img src="logo.jpg" alt="Sutil Picture" class="footer-logo">
+          <div class="footer-brand-text">
+            <strong id="footerName">Sutil Picture</strong>
+            <span>Fotografía profesional</span>
+          </div>
+        </div>
+
+        <div class="footer-info">
+          <span>© <span id="footerYear"></span></span>
+          <a href="admin.html" class="admin-link" title="Panel de administración" aria-label="Panel de administración">
+            ⚙️ Admin
+          </a>
         </div>
       </div>
 
-      <div class="footer-info">
-        <span>© <span id="footerYear"></span></span>
-        <a href="admin.html" class="admin-link" title="Panel de administración" aria-label="Panel de administración">
-          ⚙️ Admin
+      <!-- ✅ APARTADO DEL DESARROLLADOR -->
+      <div class="footer-devs">
+        <span class="footer-devs-label">💻 Desarrollado por</span>
+        <span class="footer-devs-name">Anier García Calzadilla</span>
+
+        <a href="mailto:aniergarcia092@gmail.com" title="Enviar email">
+          📧 aniergarcia092@gmail.com
+        </a>
+
+        <a href="https://wa.me/5350702534?text=Hola%20Anier,%20vi%20la%20web%20de%20Sutil%20Picture" target="_blank" rel="noopener" title="WhatsApp del desarrollador">
+          📱 +53 50702534
         </a>
       </div>
     </div>
@@ -1106,10 +1187,29 @@
           <strong id="cartTotal">0 CUP</strong>
         </div>
 
-        <!-- Formulario de reserva -->
+        <!-- ✅ FORMULARIO DE RESERVA CON FECHA Y HORA -->
         <div class="cart-form">
-          <input type="text" id="cartNombre" placeholder="Tu nombre" autocomplete="name">
-          <input type="tel" id="cartTelefono" placeholder="Tu teléfono / WhatsApp" autocomplete="tel">
+          <input type="text" id="cartNombre" placeholder="Tu nombre" autocomplete="name" required>
+          <input type="tel" id="cartTelefono" placeholder="Tu teléfono / WhatsApp" autocomplete="tel" required>
+
+          <input type="date" id="cartFecha" required title="Selecciona la fecha de tu sesión">
+
+          <select id="cartHora" required>
+            <option value="">Selecciona una hora</option>
+            <option value="08:00">08:00 AM</option>
+            <option value="09:00">09:00 AM</option>
+            <option value="10:00">10:00 AM</option>
+            <option value="11:00">11:00 AM</option>
+            <option value="12:00">12:00 PM</option>
+            <option value="13:00">01:00 PM</option>
+            <option value="14:00">02:00 PM</option>
+            <option value="15:00">03:00 PM</option>
+            <option value="16:00">04:00 PM</option>
+            <option value="17:00">05:00 PM</option>
+            <option value="18:00">06:00 PM</option>
+          </select>
+
+          <p class="aviso-hora" id="avisoHora"></p>
         </div>
 
         <button class="cart-checkout" id="cartCheckout">
@@ -1402,12 +1502,45 @@
     }
 
     /* =========================================================
+       DISPONIBILIDAD: Consultar horas ocupadas al elegir fecha
+    ========================================================= */
+    async function actualizarDisponibilidad() {
+      const fecha = document.getElementById('cartFecha').value;
+      const aviso = document.getElementById('avisoHora');
+
+      if (!fecha) {
+        aviso.textContent = '';
+        aviso.classList.remove('ocupada');
+        return;
+      }
+
+      aviso.textContent = 'Consultando disponibilidad...';
+      aviso.classList.remove('ocupada');
+
+      try {
+        const response = await fetch(`${API_URL}/reservas/disponibilidad?fecha=${fecha}`);
+        const data = await response.json();
+
+        if (data.horasOcupadas && data.horasOcupadas.length > 0) {
+          aviso.textContent = `⚠️ Ocupadas: ${data.horasOcupadas.join(', ')}`;
+          aviso.classList.add('ocupada');
+        } else {
+          aviso.textContent = '✓ Todas las horas disponibles';
+        }
+      } catch (err) {
+        aviso.textContent = '';
+      }
+    }
+
+    /* =========================================================
        CHECKOUT: crea la reserva y abre WhatsApp
     ========================================================= */
     async function checkoutWhatsApp() {
       const status = document.getElementById('cartCheckoutStatus');
       const nombre = document.getElementById('cartNombre').value.trim();
       const telefono = document.getElementById('cartTelefono').value.trim();
+      const fecha = document.getElementById('cartFecha').value;
+      const hora = document.getElementById('cartHora').value;
 
       // Validaciones
       if (!state.cart.length) {
@@ -1416,7 +1549,17 @@
       }
 
       if (!nombre || !telefono) {
-        status.textContent = 'Completa tu nombre y teléfono para continuar.';
+        status.textContent = 'Completa tu nombre y teléfono.';
+        return;
+      }
+
+      if (!fecha) {
+        status.textContent = 'Selecciona la fecha de tu sesión.';
+        return;
+      }
+
+      if (!hora) {
+        status.textContent = 'Selecciona la hora de tu sesión.';
         return;
       }
 
@@ -1432,12 +1575,23 @@
         mensaje += `${i + 1}. ${item.titulo} — ${item.precio} ${item.moneda}\n`;
       });
 
+      // Formatear fecha
+      const fechaObj = new Date(fecha + 'T00:00:00');
+      const fechaFormateada = fechaObj.toLocaleDateString('es-ES', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+
       mensaje += `\n*Total estimado:* ${formatPrecio(total)} ${moneda}\n\n`;
       mensaje += `*Nombre:* ${nombre}\n`;
-      mensaje += `*Teléfono:* ${telefono}\n\n`;
+      mensaje += `*Teléfono:* ${telefono}\n`;
+      mensaje += `*📅 Fecha deseada:* ${fechaFormateada}\n`;
+      mensaje += `*🕐 Hora:* ${hora}\n\n`;
       mensaje += '¿Podrían confirmarme disponibilidad?';
 
-      // 1. Guardar la reserva en el backend
+      // 1. Guardar la reserva
       status.textContent = 'Registrando reserva...';
 
       try {
@@ -1447,6 +1601,8 @@
           body: JSON.stringify({
             nombre,
             telefono,
+            fecha_deseada: fecha,
+            hora_deseada: hora,
             items: state.cart.map(i => ({
               titulo: i.titulo,
               precio: i.precio,
@@ -1457,28 +1613,29 @@
           })
         });
 
+        const result = await response.json();
+
         if (!response.ok) {
-          const err = await response.json().catch(() => ({}));
-          throw new Error(err.error || 'Error al registrar la reserva');
+          throw new Error(result.error || 'Error al registrar la reserva');
         }
 
         status.textContent = '✓ Reserva registrada. Abriendo WhatsApp...';
 
-        // 2. Vaciar carrito
         state.cart = [];
         guardarCarrito();
         actualizarUIcarrito();
         renderOfertas();
 
-        // 3. Limpiar formulario
         document.getElementById('cartNombre').value = '';
         document.getElementById('cartTelefono').value = '';
+        document.getElementById('cartFecha').value = '';
+        document.getElementById('cartHora').value = '';
+        document.getElementById('avisoHora').textContent = '';
+        document.getElementById('avisoHora').classList.remove('ocupada');
 
-        // 4. Abrir WhatsApp
         const url = `https://wa.me/${whatsapp}?text=${encodeURIComponent(mensaje)}`;
         window.open(url, '_blank');
 
-        // 5. Cerrar carrito después de 1.5 seg
         setTimeout(() => {
           document.getElementById('cartModal').classList.remove('open');
           status.textContent = '';
@@ -1551,6 +1708,18 @@
       await cargarFotosDinamicas();
       await cargarOfertas();
       actualizarUIcarrito();
+
+      // Establecer fecha mínima (hoy)
+      const fechaInput = document.getElementById('cartFecha');
+      if (fechaInput) {
+        const hoy = new Date();
+        const yyyy = hoy.getFullYear();
+        const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+        const dd = String(hoy.getDate()).padStart(2, '0');
+        fechaInput.min = `${yyyy}-${mm}-${dd}`;
+
+        fechaInput.addEventListener('change', actualizarDisponibilidad);
+      }
     });
   </script>
 </body>

@@ -10,21 +10,49 @@ const router = express.Router();
 ========================================================= */
 router.post('/', async (req, res) => {
   try {
-    const { nombre, telefono, items, total, moneda } = req.body;
+    const {
+      nombre,
+      telefono,
+      items,
+      total,
+      moneda,
+      fecha_deseada,
+      hora_deseada
+    } = req.body;
 
     if (!nombre || !telefono || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ error: 'Datos incompletos' });
     }
 
+    if (!fecha_deseada || !hora_deseada) {
+      return res.status(400).json({ error: 'Debes seleccionar fecha y hora para tu sesión' });
+    }
+
+    // Verificar que la hora esté libre
+    const existe = await db.execute({
+      sql: `SELECT id FROM reservas 
+            WHERE fecha_deseada = ? AND hora_deseada = ? AND estado != 'rechazada'`,
+      args: [fecha_deseada, hora_deseada]
+    });
+
+    if (existe.rows.length > 0) {
+      return res.status(409).json({
+        error: 'Esa hora ya está reservada. Por favor elige otra.'
+      });
+    }
+
     const result = await db.execute({
-      sql: `INSERT INTO reservas (nombre, telefono, items, total, moneda, estado)
-            VALUES (?, ?, ?, ?, ?, 'pendiente')`,
+      sql: `INSERT INTO reservas 
+            (nombre, telefono, items, total, moneda, fecha_deseada, hora_deseada, estado)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 'pendiente')`,
       args: [
         nombre,
         telefono,
         JSON.stringify(items),
         Number(total) || 0,
-        moneda || 'CUP'
+        moneda || 'CUP',
+        fecha_deseada,
+        hora_deseada
       ]
     });
 
@@ -32,6 +60,33 @@ router.post('/', async (req, res) => {
   } catch (err) {
     console.error('Error en POST /reservas:', err.message);
     res.status(500).json({ error: 'Error al crear la reserva' });
+  }
+});
+
+/* =========================================================
+   GET /api/reservas/disponibilidad?fecha=YYYY-MM-DD
+   Devuelve las horas ocupadas para esa fecha (público)
+========================================================= */
+router.get('/disponibilidad', async (req, res) => {
+  try {
+    const { fecha } = req.query;
+
+    if (!fecha) {
+      return res.status(400).json({ error: 'Fecha requerida' });
+    }
+
+    const result = await db.execute({
+      sql: `SELECT hora_deseada FROM reservas 
+            WHERE fecha_deseada = ? AND estado != 'rechazada'`,
+      args: [fecha]
+    });
+
+    const horasOcupadas = result.rows.map(r => r.hora_deseada);
+
+    res.json({ fecha, horasOcupadas });
+  } catch (err) {
+    console.error('Error en GET /reservas/disponibilidad:', err.message);
+    res.status(500).json({ error: 'Error al consultar disponibilidad' });
   }
 });
 
@@ -122,7 +177,6 @@ router.delete('/:id', verificarToken, async (req, res) => {
 
 /* =========================================================
    GET /api/reservas/stats
-   Admin obtiene totales (día, semana, mes, total)
 ========================================================= */
 router.get('/stats', verificarToken, async (req, res) => {
   try {
@@ -139,18 +193,9 @@ router.get('/stats', verificarToken, async (req, res) => {
       };
     };
 
-    const hoy = await sumarPorPeriodo(
-      "DATE(confirmado_en) = DATE('now')"
-    );
-
-    const semana = await sumarPorPeriodo(
-      "confirmado_en >= DATE('now', '-7 days')"
-    );
-
-    const mes = await sumarPorPeriodo(
-      "confirmado_en >= DATE('now', '-30 days')"
-    );
-
+    const hoy = await sumarPorPeriodo("DATE(confirmado_en) = DATE('now')");
+    const semana = await sumarPorPeriodo("confirmado_en >= DATE('now', '-7 days')");
+    const mes = await sumarPorPeriodo("confirmado_en >= DATE('now', '-30 days')");
     const total = await sumarPorPeriodo("1=1");
 
     const pendientesResult = await db.execute(
