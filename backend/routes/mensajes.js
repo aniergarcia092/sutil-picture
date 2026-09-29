@@ -1,61 +1,91 @@
 const express = require('express');
-const db = require('../database');
+const { db } = require('../database');
 const { verificarToken } = require('../middleware/auth');
 
 const router = express.Router();
 
-router.post('/', (req, res) => {
-  const { nombre, telefono, servicio, mensaje } = req.body;
+/* =========================================================
+   POST /api/mensajes (público)
+========================================================= */
+router.post('/', async (req, res) => {
+  try {
+    const { nombre, telefono, servicio, mensaje } = req.body;
 
-  if (!nombre || !telefono) {
-    return res.status(400).json({ error: 'Nombre y teléfono son obligatorios' });
+    if (!nombre || !telefono) {
+      return res.status(400).json({ error: 'Nombre y teléfono son obligatorios' });
+    }
+
+    const result = await db.execute({
+      sql: `INSERT INTO mensajes (nombre, telefono, servicio, mensaje)
+            VALUES (?, ?, ?, ?)`,
+      args: [
+        nombre,
+        telefono,
+        servicio || '',
+        mensaje || ''
+      ]
+    });
+
+    res.json({ id: Number(result.lastInsertRowid) });
+  } catch (err) {
+    console.error('Error en POST /mensajes:', err.message);
+    res.status(500).json({ error: 'Error al enviar el mensaje' });
   }
-
-  const stmt = db.prepare(`
-    INSERT INTO mensajes (nombre, telefono, servicio, mensaje)
-    VALUES (?, ?, ?, ?)
-  `);
-
-  const result = stmt.run(
-    nombre,
-    telefono,
-    servicio || '',
-    mensaje || ''
-  );
-
-  res.json({ id: result.lastInsertRowid });
 });
 
-router.get('/', verificarToken, (req, res) => {
-  const mensajes = db
-    .prepare('SELECT * FROM mensajes ORDER BY creado_en DESC')
-    .all();
-
-  res.json(mensajes);
+/* =========================================================
+   GET /api/mensajes (admin)
+========================================================= */
+router.get('/', verificarToken, async (req, res) => {
+  try {
+    const result = await db.execute('SELECT * FROM mensajes ORDER BY creado_en DESC');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error en GET /mensajes:', err.message);
+    res.status(500).json({ error: 'Error al obtener los mensajes' });
+  }
 });
 
-router.put('/:id/leido', verificarToken, (req, res) => {
-  const result = db
-    .prepare('UPDATE mensajes SET leido=1 WHERE id=?')
-    .run(req.params.id);
+/* =========================================================
+   PUT /api/mensajes/:id/leido
+========================================================= */
+router.put('/:id/leido', verificarToken, async (req, res) => {
+  try {
+    const result = await db.execute({
+      sql: 'UPDATE mensajes SET leido=1 WHERE id=?',
+      args: [req.params.id]
+    });
 
-  if (!result.changes) {
-    return res.status(404).json({ error: 'Mensaje no encontrado' });
+    if (result.rowsAffected === 0) {
+      return res.status(404).json({ error: 'Mensaje no encontrado' });
+    }
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('Error en PUT /mensajes/leido:', err.message);
+    res.status(500).json({ error: 'Error al actualizar el mensaje' });
   }
-
-  res.json({ ok: true });
 });
 
-router.delete('/:id', verificarToken, (req, res) => {
-  const result = db
-    .prepare('DELETE FROM mensajes WHERE id=?')
-    .run(req.params.id);
+/* =========================================================
+   DELETE /api/mensajes/:id
+========================================================= */
+router.delete('/:id', verificarToken, async (req, res) => {
+  try {
+    const result = await db.execute({
+      sql: 'DELETE FROM mensajes WHERE id=?',
+      args: [req.params.id]
+    });
 
-  if (!result.changes) {
-    return res.status(404).json({ error: 'Mensaje no encontrado' });
+    if (result.rowsAffected === 0) {
+      return res.status(404).json({ error: 'Mensaje no encontrado' });
+    }
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('Error en DELETE /mensajes:', err.message);
+    res.status(500).json({ error: 'Error al eliminar el mensaje' });
   }
-
-  res.json({ ok: true });
 });
 
 module.exports = router;
