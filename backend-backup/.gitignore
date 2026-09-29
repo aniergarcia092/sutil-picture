@@ -1,0 +1,55 @@
+@"
+# ============================================
+# DEPENDENCIAS
+# ============================================
+node_modules/
+backend/node_modules/
+
+# ============================================
+# VARIABLES DE ENTORNO (SECRETAS)
+# ============================================
+.env
+backend/.env
+*.env
+
+# ============================================
+# BASE DE DATOS
+# ============================================
+backend/database.db
+backend/database.db-journal
+backend/database.json
+
+# ============================================
+# UPLOADS
+# ============================================
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# ============================================
+# ARCHIVOS LOCALES DE DESARROLLO
+# ============================================
+backend/hash.txt
+backend/generar-hash.js
+backend/verificar-env.js
+hash.txt
+.env.hash
+*.log
+
+# ============================================
+# SISTEMA
+# ============================================
+.DS_Store
+Thumbs.db
+
+# ============================================
+# EDITOR
+# ============================================
+.vscode/
+.idea/
+
+# ============================================
+# BUILD
+# ============================================
+dist/
+build/
+"@ | Out-File -FilePath .gitignore -Encoding utf8
